@@ -99,7 +99,7 @@ class MenuSeeder extends Seeder
                 'id' => 15,
                 'nama_menu' => 'Postingan',
                 'link_menu' => 'postingan',
-                'icon_menu' => 'bi:postage-heart'
+                'icon_menu' => 'fa fa-comment'
             ],
         ]);
     }

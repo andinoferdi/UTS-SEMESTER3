@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('pesan', function (Blueprint $table) {
             $table->id();
-            $table->string('pengirim'); // Email pengirim
+            $table->string(column: 'pengirim'); // Email pengirim
             $table->text('nama_pesan'); // Isi pesan atau judul pesan
-            $table->foreignId('kategori_pesan_id')->constrained('kategori_pesan')->onDelete('cascade');
+            $table->foreignId(column: 'kategori_pesan_id')->constrained('kategori_pesan')->onDelete('cascade');
             $table->string('file')->nullable(); // File lampiran, jika ada
             $table->string('penerima'); // Email penerima
             $table->timestamps();

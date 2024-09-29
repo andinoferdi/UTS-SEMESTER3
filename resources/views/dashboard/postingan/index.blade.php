@@ -18,13 +18,16 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card">
-                    <div class="card-header" style="margin-top: 40px;">
-                        <h2>Daftar Postingan</h2>
+                    <div class="card-header border-0 pt-6">
+                        <h2 class="card-title">Daftar Postingan</h2>
+                        <div class="card-toolbar">
+                            <a href="{{ route('postingan.create') }}" class="btn btn-primary mb-3">
+                                <i class="fa fa-plus"></i> Tambah Postingan
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <a href="{{ route('postingan.create') }}" class="btn btn-primary mb-3">
-                            <i class="fa fa-plus"></i> Tambah Postingan
-                        </a>
+
 
                         @if ($postings->isEmpty())
                             <div class="alert alert-warning">Tidak ada postingan.</div>

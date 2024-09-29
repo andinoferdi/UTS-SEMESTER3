@@ -21,7 +21,6 @@
                     <div class="card-header border-0 pt-6">
                         <h2 class="card-title">Daftar Pesan Terkirim</h2>
                         <div class="card-toolbar">
-                            <!-- Tombol Kirim Pesan Baru -->
                             <a href="{{ route('sent.create') }}" class="btn btn-primary">Kirim Pesan Baru</a>
                         </div>
                     </div>
