@@ -37,9 +37,11 @@
                             <div class="card-body">
                                 <p>{{ $pesan->nama_pesan }}</p>
                                 @if ($pesan->file)
-                                    <p><strong>Lampiran:</strong></p>
-                                    <img src="{{ asset('storage/' . $pesan->file) }}" alt="Lampiran Gambar"
-                                        style="max-width: 100%; height: auto;">
+                                    <div class="mb-4">
+                                        <strong>Lampiran:</strong>
+                                        <a href="{{ asset('storage/' . $pesan->file) }}" target="_blank">Download
+                                            Lampiran</a>
+                                    </div>
                                 @endif
                                 <p><strong>Tanggal:</strong> {{ $pesan->created_at->format('d-m-Y H:i') }}</p>
                             </div>

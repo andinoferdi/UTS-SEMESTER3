@@ -42,10 +42,9 @@
                             <p>{{ $pesan->nama_pesan }}</p>
                         </div>
                         @if ($pesan->file)
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <strong>Lampiran:</strong>
-                                <img src="{{ asset('storage/' . $pesan->file) }}" alt="Lampiran Gambar"
-                                    style="max-width: 100%; height: auto;">
+                                <a href="{{ asset('storage/' . $pesan->file) }}" target="_blank">Download Lampiran</a>
                             </div>
                         @endif
                         <div class="mb-3">

@@ -16,6 +16,7 @@ use App\Http\Controllers\KategoriBukuController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PesanController;
+use App\Http\Controllers\PostinganController; // Add this line
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'indexlogin'])->name('login');
@@ -47,11 +48,18 @@ Route::middleware(['auth', 'admin', 'timezone', 'log.error', 'check.menu.access'
 
         Route::get('/inbox', [PesanController::class, 'inbox'])->name('inbox');
         Route::get('/sent', [PesanController::class, 'sent'])->name('sent');
-       Route::get('/sent/create', [PesanController::class, 'create'])->name('sent.create');
+        Route::get('/sent/create', [PesanController::class, 'create'])->name('sent.create');
         Route::post('/sent', [PesanController::class, 'store'])->name('sent.store');
         Route::get('/inbox/{id}', [PesanController::class, 'show'])->name('inbox.show');
         Route::get('/inbox/{id}/reply', [PesanController::class, 'reply'])->name('inbox.reply');
         Route::post('/inbox/{id}/reply', [PesanController::class, 'sendReply'])->name('inbox.sendReply');
         Route::delete('/inbox/{id}', [PesanController::class, 'destroy'])->name('inbox.destroy');
+
+        // Routes for Posting
+        Route::resource('postingan', PostinganController::class)->middleware('log.activity');
+
+        // Like and Comment Routes
+        Route::post('postingan/{id}/like', [PostinganController::class, 'like'])->name('postingan.like');
+        Route::post('postingan/{id}/comment', [PostinganController::class, 'comment'])->name('postingan.comment');
     });
 });
