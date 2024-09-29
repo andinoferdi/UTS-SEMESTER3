@@ -88,18 +88,25 @@ class MenuSeeder extends Seeder
                 'link_menu' => 'inbox',
                 'icon_menu' => 'bi bi-envelope'
             ],
-             [
+            [
                 'id' => 14,
                 'nama_menu' => 'Kirim Pesan',
                 'link_menu' => 'sent',
                 'icon_menu' => 'bi bi-envelope-open'
             ],
 
-                [
+            [
                 'id' => 15,
                 'nama_menu' => 'Postingan',
                 'link_menu' => 'postingan',
                 'icon_menu' => 'fa fa-comment'
+            ],
+
+            [
+                'id' => 16,
+                'nama_menu' => 'Informasi',
+                'link_menu' => 'informasi',
+                'icon_menu' => 'fa fa-info'
             ],
         ]);
     }

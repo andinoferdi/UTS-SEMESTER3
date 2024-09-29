@@ -16,7 +16,8 @@ use App\Http\Controllers\KategoriBukuController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PesanController;
-use App\Http\Controllers\PostinganController; // Add this line
+use App\Http\Controllers\PostinganController;
+use App\Http\Controllers\InformasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'indexlogin'])->name('login');
@@ -61,5 +62,8 @@ Route::middleware(['auth', 'admin', 'timezone', 'log.error', 'check.menu.access'
         // Like and Comment Routes
         Route::post('postingan/{id}/like', [PostinganController::class, 'like'])->name('postingan.like');
         Route::post('postingan/{id}/comment', [PostinganController::class, 'comment'])->name('postingan.comment');
+
+        // Routes for Earthquake and Weather Information
+        Route::get('/informasi', [InformasiController::class, 'index'])->middleware('log.activity')->name('informasi.index');
     });
 });

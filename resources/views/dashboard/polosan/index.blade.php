@@ -14,7 +14,15 @@
             </div>
         </div>
         <div class="row justify-content-center">
-
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header" style="margin-top: 40px;">
+                        <h2>Polosan</h2>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
