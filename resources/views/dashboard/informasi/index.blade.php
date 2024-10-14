@@ -58,7 +58,6 @@
             color: #007bff;
         }
 
-        /* Gaya untuk kotak informasi negara */
         .country-info {
             display: none;
             margin-top: 30px;
@@ -67,6 +66,13 @@
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+        }
+
+        .country-info img {
+            max-width: 200px;
+            /* Atur ukuran maksimum bendera */
+            height: auto;
+            margin-top: 20px;
         }
 
         .error {

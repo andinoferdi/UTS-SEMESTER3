@@ -27,8 +27,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-
-
                         @if ($postings->isEmpty())
                             <div class="alert alert-warning">Tidak ada postingan.</div>
                         @else
@@ -44,19 +42,10 @@
                                                 <span class="text-muted">({{ $post->created_at->diffForHumans() }})</span>
                                             </div>
                                         </div>
-
                                         <div>
-                                            <form action="{{ route('postingan.like', $post->id) }}" method="POST"
-                                                style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-outline-primary btn-sm">Like</button>
-                                            </form>
-
                                             @if ($post->user_id == auth()->id())
                                                 <a href="{{ route('postingan.edit', $post->id) }}"
                                                     class="btn btn-warning btn-sm">Edit</a>
-
-                                                <!-- Delete button -->
                                                 <form action="{{ route('postingan.destroy', $post->id) }}" method="POST"
                                                     style="display: inline;"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini?');">
@@ -71,45 +60,66 @@
                                     <h5 class="mt-3">{{ $post->nama_postingan }}</h5>
 
                                     @if ($post->gambar)
-                                        <img src="{{ asset('storage/' . $post->gambar) }}" class="img-fluid mb-2"
+                                        <img src="{{ asset('storage/' . $post->gambar) }}" class="img-fluid post-image mb-2"
                                             alt="Post Image">
                                     @endif
 
-                                    <p>{{ $post->likes->count() }} Likes</p>
+                                    <form action="{{ route('postingan.like', $post->id) }}" method="POST"
+                                        style="text-align: center;">
+                                        @csrf
+                                        @if ($post->likes->contains('user_id', auth()->id()))
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-thumbs-down"></i> Unlike ({{ $post->likes->count() }})
+                                            </button>
+                                        @else
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                <i class="fa fa-thumbs-up"></i> Like ({{ $post->likes->count() }})
+                                            </button>
+                                        @endif
+                                    </form>
 
-                                    <div class="comments">
-                                        <h6>Komentar:</h6>
-                                        @foreach ($post->komentars as $comment)
-                                            <div class="comment border p-2 rounded mb-2">
-                                                <div class="d-flex align-items-start">
-                                                    <img src="{{ isset($comment->user->foto) ? asset('storage/' . $comment->user->foto) : asset('assets/media/avatars/blank.png') }}"
-                                                        alt="User Photo" class="rounded-circle me-2"
-                                                        style="width: 30px; height: 30px;">
-                                                    <div>
-                                                        <strong>{{ $comment->user->name }}</strong>:
-                                                        <div>{{ $comment->nama_komentar }}</div>
 
-                                                        @if ($comment->gambar_komentar)
-                                                            <img src="{{ asset('storage/' . $comment->gambar_komentar) }}"
-                                                                class="img-fluid mt-2" alt="Comment Image">
-                                                        @endif
+                                    <div class="comments mt-3">
+                                        <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#comments-{{ $post->id }}" aria-expanded="false"
+                                            aria-controls="comments-{{ $post->id }}">
+                                            Komentar ({{ $post->komentars->count() }})
+                                        </button>
+
+                                        <div class="collapse" id="comments-{{ $post->id }}">
+                                            @foreach ($post->komentars as $comment)
+                                                <div class="comment border p-2 rounded mb-2">
+                                                    <div class="d-flex align-items-start">
+                                                        <img src="{{ isset($comment->user->foto) ? asset('storage/' . $comment->user->foto) : asset('assets/media/avatars/blank.png') }}"
+                                                            alt="User Photo" class="rounded-circle me-2"
+                                                            style="width: 30px; height: 30px;">
+                                                        <div>
+                                                            <strong>{{ $comment->user->name }}</strong>:
+                                                            <div>{{ $comment->nama_komentar }}</div>
+
+                                                            @if ($comment->gambar_komentar)
+                                                                <img src="{{ asset('storage/' . $comment->gambar_komentar) }}"
+                                                                    class="img-fluid comment-image mt-2"
+                                                                    alt="Comment Image">
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
 
-                                        <form id="commentForm-{{ $post->id }}" method="POST"
-                                            enctype="multipart/form-data"
-                                            action="{{ route('postingan.comment', $post->id) }}">
-                                            @csrf
-                                            <div class="input-group">
-                                                <input type="text" name="nama_komentar" class="form-control"
-                                                    placeholder="Tulis komentar..." required autocomplete="off">
-                                                <input type="file" name="gambar_komentar" class="form-control"
-                                                    accept="image/*">
-                                                <button class="btn btn-outline-secondary" type="submit">Kirim</button>
-                                            </div>
-                                        </form>
+                                            <form id="commentForm-{{ $post->id }}" method="POST"
+                                                enctype="multipart/form-data"
+                                                action="{{ route('postingan.comment', $post->id) }}">
+                                                @csrf
+                                                <div class="input-group">
+                                                    <input type="text" name="nama_komentar" class="form-control"
+                                                        placeholder="Tulis komentar..." required autocomplete="off">
+                                                    <input type="file" name="gambar_komentar" class="form-control"
+                                                        accept="image/*">
+                                                    <button class="btn btn-outline-primary" type="submit">Kirim</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -120,42 +130,19 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            $('form[id^="commentForm-"]').on('submit', function(e) {
-                e.preventDefault(); // Mencegah pengalihan halaman
-                const formData = new FormData(this);
-                const url = $(this).attr('action');
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        const postId = url.split('/').pop(); // Mengambil ID postingan dari URL
-                        // Append new comment to the comments section
-                        $('#commentForm-' + postId + ' .comments').append(`
-                            <div class="comment border p-2 rounded mb-2">
-                                <div class="d-flex align-items-start">
-                                    <img src="${response.user.photo}" alt="User Photo" class="rounded-circle me-2" style="width: 30px; height: 30px;">
-                                    <div>
-                                        <strong>${response.user.name}</strong>:
-                                        <div>${response.nama_komentar}</div>
-                                        ${response.gambar_komentar ? `<img src="${response.gambar_komentar}" class="img-fluid mt-2" alt="Comment Image">` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                        // Clear input fields
-                        $('#commentForm-' + postId + ' input[name="nama_komentar"]').val('');
-                        $('#commentForm-' + postId + ' input[name="gambar_komentar"]').val('');
-                    },
-                    error: function(err) {
-                        console.error(err);
-                    }
-                });
-            });
-        });
-    </script>
+    <style>
+        .post img {
+            max-width: 100%;
+            max-height: 400px;
+        }
+
+        .comment img {
+            max-width: 100%;
+            max-height: 200px;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+    </style>
 @endsection

@@ -30,7 +30,7 @@
             data-kt-scroll-offset="0">
 
             <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary
-                menu-state-bullet-primary menu-arrow-gray-500"
+    menu-state-bullet-primary menu-arrow-gray-500"
                 id="kt_aside_menu" data-kt-menu="true">
 
                 <div class="menu-item">
@@ -41,11 +41,11 @@
 
                 @php
                     $jenis_user_id = auth()->user()->jenis_user_id;
-
                     $menus = App\Models\Menu::whereHas('settingMenus', function ($query) use ($jenis_user_id) {
                         $query->where('jenis_user_id', $jenis_user_id);
                     })->get();
                 @endphp
+
                 @foreach ($menus as $menu)
                     <div class="menu-item">
                         <a class="menu-link {{ request()->is('dashboard/' . $menu->link_menu . '*') ? 'active' : '' }}"
@@ -58,6 +58,7 @@
                     </div>
                 @endforeach
             </div>
+
 
         </div>
     </div>

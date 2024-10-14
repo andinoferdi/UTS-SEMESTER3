@@ -78,15 +78,23 @@ class PostinganController extends Controller
         return redirect()->route('postingan.index')->with('success', 'Postingan deleted successfully.');
     }
 
-    public function like($id)
-    {
+   public function like($id)
+{
+    $like = Like::where('postingan_id', $id)->where('user_id', auth()->id())->first();
+
+    if ($like) {
+        $like->delete();
+        return back()->with('success', 'You unliked this posting.');
+    } else {
+        // Jika belum ada, tambahkan like
         Like::create([
             'postingan_id' => $id,
             'user_id' => auth()->id(),
         ]);
-
         return back()->with('success', 'You liked this posting.');
     }
+}
+
 
     public function comment(Request $request, $id)
     {
