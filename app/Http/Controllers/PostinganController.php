@@ -20,54 +20,60 @@ class PostinganController extends Controller
         return view('dashboard.postingan.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama_postingan' => 'required|string|max:255',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+   public function store(Request $request)
+{
+    $request->validate([
+        'nama_postingan' => 'required|string|max:255',
+        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    try {
+        // Cek apakah gambar diunggah
+        $path = $request->file('gambar')
+            ? $request->file('gambar')->store('images', 'public')
+            : null;
+
+        // Simpan postingan baru
+        Postingan::create([
+            'user_id' => auth()->id(),
+            'nama_postingan' => $request->nama_postingan,
+            'gambar' => $path, // Boleh null jika tidak ada gambar
         ]);
 
-        try {
-            $path = $request->file('gambar')->store('images', 'public');
-
-            Postingan::create([
-                'user_id' => auth()->id(),
-                'nama_postingan' => $request->nama_postingan,
-                'gambar' => $path,
-            ]);
-
-            return redirect()->route('postingan.index')->with('success', 'Postingan created successfully.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Something went wrong: ' . $e->getMessage()]);
-        }
+        return redirect()->route('postingan.index')->with('success', 'Postingan created successfully.');
+    } catch (\Exception $e) {
+        return back()->withErrors(['error' => 'Something went wrong: ' . $e->getMessage()]);
     }
+}
+
 
     public function edit(Postingan $postingan)
     {
         return view('dashboard.postingan.edit', compact('postingan'));
     }
 
-    public function update(Request $request, Postingan $postingan)
-    {
-        $request->validate([
-            'nama_postingan' => 'required|string|max:255',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+   public function update(Request $request, Postingan $postingan)
+{
+    $request->validate([
+        'nama_postingan' => 'required|string|max:255',
+        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('images', 'public');
-            $postingan->gambar = $path;
-        }
-
-        $postingan->nama_postingan = $request->nama_postingan;
-        $postingan->save();
-
-        return redirect()->route('postingan.index')->with('success', 'Postingan updated successfully.');
+    if ($request->hasFile('gambar')) {
+        // Jika ada gambar baru, simpan dan update
+        $path = $request->file('gambar')->store('images', 'public');
+        $postingan->gambar = $path;
     }
+
+    $postingan->nama_postingan = $request->nama_postingan;
+    $postingan->save();
+
+    return redirect()->route('postingan.index')->with('success', 'Postingan updated successfully.');
+}
+
 
     public function destroy(Postingan $postingan)
     {
-        // Check if the authenticated user is the owner of the post
         if ($postingan->user_id !== auth()->id()) {
             return redirect()->route('postingan.index')->withErrors(['error' => 'You are not authorized to delete this post.']);
         }
@@ -117,7 +123,6 @@ class PostinganController extends Controller
             'gambar_komentar' => $path,
         ]);
 
-        // Redirect back to the previous page with a success message
         return redirect()->back()->with('success', 'Komentar berhasil ditambahkan.');
     }
 }

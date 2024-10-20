@@ -2,24 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserActivity;
-use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\JenisUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
 {
-   public function index(Request $request)
+ public function index(Request $request)
 {
+    $geoapifyApiKey = 'b2bdd070d6974161897dd9d70cebe142'; // API Geoapify
+
+    // Ambil data gempa dari API BMKG
+    $gempaResponse = file_get_contents('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json');
+    $gempaData = json_decode($gempaResponse, true);
+    $gempa = $gempaData['Infogempa']['gempa'] ?? null;
+
+    // Ambil data cuaca dari API BMKG
+    $cuacaResponse = file_get_contents('https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=35.78.08.1003');
+    $cuacaData = json_decode($cuacaResponse, true);
+    $cuaca = $cuacaData['data'][0]['cuaca'][0][0] ?? null; // Cuaca terkini
+$users = User::all();
     $activities = UserActivity::with('user')->get();
-    $users = User::all();
-    $menus = Menu::all();
-    $jenis_user = JenisUser::all();
-    return view('dashboard.index', compact('users', 'activities', 'menus','jenis_user')); // Tambahkan menus ke compact
+    return view('dashboard.index', compact('gempa','users' , 'activities', 'geoapifyApiKey', 'cuaca'));
 }
+
    public function indexsettingsprofile(Request $request)
 {
     $user = Auth::user();

@@ -25,7 +25,8 @@
                                 <!-- Pemilihan Jenis User -->
                                 <div class="mb-3">
                                     <label for="jenis_user_id" class="form-label">Jenis User</label>
-                                    <select class="form-control" id="jenis_user_id" name="jenis_user_id" required>
+                                    <select class="form-control" id="jenis_user_id" name="jenis_user_id"
+                                        {{ isset($settingMenu[0]->jenis_user_id) ? 'disabled' : '' }} required>
                                         @foreach ($jenisUsers as $jenisUser)
                                             <option value="{{ $jenisUser->id }}"
                                                 {{ $jenisUser->id == $settingMenu[0]->jenis_user_id ? 'selected' : '' }}>
@@ -34,6 +35,7 @@
                                         @endforeach
                                     </select>
                                 </div>
+
 
                                 <!-- Checkbox untuk Memilih Menu -->
                                 <div class="mb-3">

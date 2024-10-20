@@ -178,7 +178,109 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row gy-5 g-xl-8">
+                    <div class="col-xxl-6 col-lg-6 col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title text-white">Prakiraan Cuaca Terkini</h3>
+                            </div>
+                            <div class="card-body">
+                                @if ($cuaca)
+                                    <h4>{{ $cuaca['weather_desc'] }}</h4>
+                                    <p><strong>Wilayah:</strong> Airlangga, Surabaya</p>
+                                    <p><strong>Suhu:</strong> {{ $cuaca['t'] }} °C</p>
+                                    <p><strong>Kelembapan:</strong> {{ $cuaca['hu'] }}%</p>
+                                    <p><strong>Kecepatan Angin:</strong> {{ $cuaca['ws'] }} m/s</p>
+
+                                    <img src="{{ $cuaca['image'] }}" class="img-fluid mb-3" alt="Gambar Cuaca">
+                                @else
+                                    <p>Data cuaca tidak tersedia saat ini.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row: Peta Lokasi -->
+                    <div class="col-xxl-6 col-lg-6 col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-warning">
+                                <h3 class="card-title text-white">Peta Lokasi Anda</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="map" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row: Info Gempa -->
+                <div class="row gy-5 g-xl-8">
+                    <div class="col-xxl-12">
+                        <div class="card">
+                            <div class="card-header bg-danger">
+                                <h3 class="card-title text-white">Info Gempa Terkini</h3>
+                            </div>
+                            <div class="card-body">
+                                @if ($gempa)
+                                    <p><strong>Waktu:</strong> {{ $gempa['Tanggal'] }} - {{ $gempa['Jam'] }}</p>
+                                    <p><strong>Magnitude:</strong> {{ $gempa['Magnitude'] }}</p>
+                                    <p><strong>Kedalaman:</strong> {{ $gempa['Kedalaman'] }}</p>
+                                    <p><strong>Wilayah:</strong> {{ $gempa['Wilayah'] }}</p>
+                                    <p><strong>Potensi:</strong> {{ $gempa['Potensi'] }}</p>
+                                    <img src="https://data.bmkg.go.id/DataMKG/TEWS/{{ $gempa['Shakemap'] }}"
+                                        class="img-fluid" alt="Shakemap Gempa">
+                                @else
+                                    <p>Tidak ada data gempa terbaru.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-@endsection
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const apiKey = "{{ $geoapifyApiKey }}";
+                const map = L.map('map').setView([-7.2730647592, 112.7577903407], 13); // Default ke Surabaya
+
+                // Tambahkan tile layer dari Geoapify
+                L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=${apiKey}`, {
+                    maxZoom: 19,
+                }).addTo(map);
+
+                // Periksa apakah browser mendukung Geolocation API
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+
+                            // Set peta ke lokasi pengguna
+                            map.setView([lat, lon], 13);
+
+                            // Tambahkan marker di lokasi pengguna
+                            L.marker([lat, lon]).addTo(map)
+                                .bindPopup('Lokasi Anda Sekarang')
+                                .openPopup();
+                        },
+                        function(error) {
+                            console.error('Error mendapatkan lokasi:', error.message);
+                            alert('Tidak bisa mendapatkan lokasi. Menggunakan lokasi default.');
+                        }
+                    );
+                } else {
+                    alert('Geolocation tidak didukung di browser Anda. Menggunakan lokasi default.');
+                }
+            });
+        </script>
+
+        <style>
+            #map {
+                height: 400px;
+                width: 100%;
+            }
+        </style>
+    @endsection
