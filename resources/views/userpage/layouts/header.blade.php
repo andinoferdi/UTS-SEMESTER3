@@ -45,14 +45,19 @@
             </div>
             <div class="flex-equal text-end ms-1">
                 @auth
-                    <form id="logout-form" action="/logout" method="post">
+                    <a href="/dashboard" style="display: inline;">
                         @csrf
-                        <button type="submit" class="btn btn-danger">Logout</button>
+                        <button type="button" class="btn btn-primary">Dashboard</button>
+                    </a>
+                    <form id="logout-form" action="/logout" method="post" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger me-2">Logout</button>
                     </form>
                 @else
                     <a href="/login" class="btn btn-success">Login</a>
                 @endauth
             </div>
+
 
         </div>
     </div>

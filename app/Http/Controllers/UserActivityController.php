@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log; // Pastikan Log diimport
 
 class UserActivityController extends Controller
 {
@@ -28,12 +29,17 @@ class UserActivityController extends Controller
     public function logActivity($description, $status)
     {
         $userId = Auth::id();
-        self::logActivityStatic($userId, $description, $status);
+
+        if ($userId) { // Hanya log jika user terautentikasi
+            self::logActivityStatic($userId, $description, $status);
+        } else {
+            // Handle jika user tidak terautentikasi
+            Log::warning('Aktivitas dicoba dicatat tetapi user_id null.');
+        }
     }
 
     public function someAction(Request $request)
     {
-
         $this->logActivity('User melakukan aksi tertentu', 'A');
         return response()->json(['message' => 'Aksi berhasil dicatat.']);
     }

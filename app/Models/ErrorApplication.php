@@ -12,18 +12,11 @@ class ErrorApplication extends Model
     protected $table = 'error_application';
 
     protected $fillable = [
-        'user_id',
-        'module',
         'controller',
-        'function',
-        'error_message',
-        'status',
-        'create_time',
-        'delete_mark',
+        'message',
+        'stack_trace',
+        'url',
+        'method',
+        'ip_address',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

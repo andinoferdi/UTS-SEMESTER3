@@ -13,20 +13,19 @@ return new class extends Migration
     {
         Schema::create('error_application', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('module', 100);
-            $table->string('controller', 100);
-            $table->string('function', 100);
-            $table->string('error_message', 300);
-            $table->string('status', 1);
-            $table->timestamp('create_time')->useCurrent();
-            $table->string('delete_mark', 1)->default('N');
-            $table->timestamps();
-
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('controller'); // Jenis exception
+            $table->text('message'); // Pesan error
+            $table->text(column: 'stack_trace')->nullable(); // Stack trace (opsional)
+            $table->string(column: 'url')->nullable(); // URL tempat error terjadi
+            $table->string('method')->nullable(); // HTTP method (GET, POST, dll)
+            $table->string('ip_address')->nullable(); // Alamat IP user
+            $table->timestamps(); // Timestamps (created_at dan updated_at)
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down()
     {
         Schema::dropIfExists('error_application');
